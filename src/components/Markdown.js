@@ -2,7 +2,9 @@ import React from 'react';
 import MDEditor from '@uiw/react-md-editor';
 
 function Markdown() {
-    const [value, setValue] = React.useState();
+    const [title, setTitle] = React.useState();
+    const [content, setContent] = React.useState();
+
     const getNote = () => {
         fetch('http://localhost:8080/api/get')
         .then((res) => {
@@ -13,13 +15,13 @@ function Markdown() {
         })
         .then(text => {
             console.log(text);
-            setValue(text)
+            setContent(text)
         })
     }
     React.useEffect(getNote ,[])
     
     const saveNote = () => {
-        const newValue = {value}; 
+        const newValue = {title, content}; 
         fetch('http://localhost:8080/api/insert',{
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -31,11 +33,14 @@ function Markdown() {
     }  
   return (
     <div>
-      <MDEditor
-        value={value}
-        onChange={setValue}
+      <input
+        type = "text"
+        onChange={({ target: { value } }) => setTitle(value)}
       />
-      <MDEditor.Markdown source={value} />
+      <MDEditor
+        value={content}
+        onChange={setContent}
+      />
       <div>
       <button onClick = {saveNote}>Save note</button>
       </div>
