@@ -4,6 +4,7 @@ import MDEditor from '@uiw/react-md-editor';
 function Markdown() {
     const [title, setTitle] = React.useState();
     const [content, setContent] = React.useState();
+    const [list, setList] = React.useState([])
 
     const getNote = () => {
         fetch('http://localhost:8080/api/get')
@@ -18,7 +19,22 @@ function Markdown() {
             setContent(text)
         })
     }
-    React.useEffect(getNote ,[])
+
+    const getListOfNote = () => {
+        fetch('http://localhost:8080/api/list')
+        .then(res => {
+            if(res.ok){
+                return res.json()
+            }
+        })
+        .then(list => {
+            console.log('list', list);
+            setList(list);
+
+        })
+    }
+    React.useEffect(getNote, [])
+    React.useEffect(getListOfNote, [])
     
     const saveNote = () => {
         const newValue = {title, content}; 
@@ -31,22 +47,33 @@ function Markdown() {
             console.log(newValue)
         });
     }  
+
   return (
     <div>
-      <input
-        type = "text"
-        onChange={({ target: { value } }) => setTitle(value)}
-      />
-      <MDEditor
-        value={content}
-        onChange={setContent}
-      />
-      <div>
-      <button onClick = {saveNote}>Save note</button>
+      <div style ={{width: 200, backgroundColor: 'lightgray'}}>
+        <ul>
+          {list.map((item, index) => (
+            <li key = {index}>{item.title}</li>
+          ))}
+        </ul>
+      </div>
+      <div style = {{marginLeft: 200}}>
+        <input
+          type = "text"
+          onChange={({ target: { value } }) => setTitle(value)}
+        />
+      </div>
+      <div style = {{marginLeft: 200}}>
+        <MDEditor
+          value={content}
+          onChange={setContent}
+        />
+      </div>
+      <div style = {{marginLeft: 200}}>
+        <button onClick = {saveNote}>Save note</button>
       </div>
     </div>
   );
-
 }
 
 export default Markdown; 
