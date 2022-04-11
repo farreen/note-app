@@ -10,12 +10,12 @@ function Markdown() {
 
   const getNote = () => {
     fetch('http://localhost:8080/api/get')
-      .then((res) => {
-         if(res.ok) {
-           console.log(res);
-           return res.text();
-         }
-      })
+    .then((res) => {
+      if(res.ok) {
+        console.log(res);
+        return res.text();
+      }
+    })
     .then(text => {
       console.log(text);
       setContent(text)
