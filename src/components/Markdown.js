@@ -5,6 +5,8 @@ function Markdown() {
   const [title, setTitle] = React.useState();
   const [content, setContent] = React.useState();
   const [list, setList] = React.useState([])
+  const [selectedTitle, setSelectedTitle] = React.useState(null)
+  const [displayContent, setDisplayContent] = React.useState(null)  
 
   const getNote = () => {
     fetch('http://localhost:8080/api/get')
@@ -46,17 +48,22 @@ function Markdown() {
     .then(() => {
      console.log(newValue)
     });
-  }  
-
+  }
   return (
     <div>
       <div style ={{width: 200, backgroundColor: 'lightgray'}}>
         <ul>
           {list.map((item, index) => (
-            <li key = {index}>{item.title}</li>
+            <li>    
+              {/*<li key = {index}>{item.title}</li>*/}
+              <a href="javascript:void 0" onClick={() => {setSelectedTitle(item.title); setDisplayContent(item.content)}}>{item.title} </a>
+            </li>  
           ))}
         </ul>
       </div>
+        <span> Selected Title: {JSON.stringify(selectedTitle)}</span>  
+        <br/>
+        <span> Content: {JSON.stringify(displayContent)}</span>
       <div style = {{marginLeft: 200}}>
         <input
           type = "text"
