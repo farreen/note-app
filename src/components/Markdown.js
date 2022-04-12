@@ -51,7 +51,7 @@ function Markdown() {
   }
   return (
     <div>
-      <div style ={{width: 200, backgroundColor: 'lightgray'}}>
+      <div style={{width: 200, backgroundColor: 'lightgray'}}>
         <ul>
           {list.map((item, index) => (
             <li>    
@@ -61,23 +61,22 @@ function Markdown() {
           ))}
         </ul>
       </div>
-        <span> Selected Title: {JSON.stringify(selectedTitle)}</span>  
-        <br/>
-        <span> Content: {JSON.stringify(displayContent)}</span>
-      <div style = {{marginLeft: 200}}>
+      <MDEditor.Markdown source={selectedTitle} style={{fontSize: "24pt", fontWeight: "bold"}} />
+      <MDEditor.Markdown source={displayContent} />
+      <div style={{marginLeft: 200}}>
         <input
           type = "text"
-          onChange={({ target: { value } }) => setTitle(value)}
+          onChange={({target: {value}}) => setTitle(value)}
         />
       </div>
-      <div style = {{marginLeft: 200}}>
+      <div style={{marginLeft: 200}}>
         <MDEditor
           value={content}
           onChange={setContent}
         />
       </div>
-      <div style = {{marginLeft: 200}}>
-        <button onClick = {saveNote}>Save note</button>
+      <div style={{marginLeft: 200}}>
+        <button onClick={saveNote}>Save note</button>
       </div>
     </div>
   );
