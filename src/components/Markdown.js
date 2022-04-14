@@ -7,6 +7,7 @@ function Markdown() {
   const [list, setList] = React.useState([])
   const [selectedTitle, setSelectedTitle] = React.useState(null)
   const [displayContent, setDisplayContent] = React.useState(null)  
+  const [id, setId] = React.useState()
 
   const getNote = () => {
     fetch('http://localhost:8080/api/get')
@@ -56,11 +57,12 @@ function Markdown() {
           {list.map((item, index) => (
             <li>    
               {/*<li key = {index}>{item.title}</li>*/}
-              <a href="javascript:void 0" onClick={() => {setSelectedTitle(item.title); setDisplayContent(item.content)}}>{item.title} </a>
+              <a href="javascript:void 0" onClick={() => {setSelectedTitle(item.title); setDisplayContent(item.content); setId(item.id)}}>{item.title} </a>
             </li>  
           ))}
         </ul>
       </div>
+      <MDEditor.Markdown source={id} />
       <MDEditor.Markdown source={selectedTitle} style={{fontSize: "24pt", fontWeight: "bold"}} />
       <MDEditor.Markdown source={displayContent} />
       <div style={{marginLeft: 200}}>
