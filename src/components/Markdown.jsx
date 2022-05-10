@@ -81,7 +81,17 @@ function Markdown() {
         <MDEditor.Markdown source={selectedNote.title} style={{fontSize: "24pt", fontWeight: "bold"}} />
         <MDEditor.Markdown source={selectedNote.content} />
         <button onClick={() => setEditing(true)}>Edit</button>
-      </div> :<span>Editing</span>: null} 
+        </div> :<div>
+          <input type="text" 
+            value={selectedNote.title} 
+            onChange={(e) => setSelectedNote({...selectedNote, title: e.target.value})}
+          />
+          <MDEditor 
+            value={selectedNote.content}
+            onChange={(newContent) => setSelectedNote({...selectedNote, content: newContent})}
+          />
+        </div>
+      : null} 
 
       <div style={{marginLeft: 200}}>
         <input
