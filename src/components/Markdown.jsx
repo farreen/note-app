@@ -47,21 +47,21 @@ function Markdown() {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(newValue)    
     })
-    .then(() => {
-     console.log(newValue);
-    });
+    .then(res => {
+      console.log(res);
+    })
   }
 
   const updateNote = () => {
-    const newValue = {id, title, content};
+    const note = selectedNote;
     fetch('http://localhost:8080/api/update',{
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
-      body: newValue
+      body: JSON.stringify(note)
     })
-    .then(() => {
-      console.log('newValue',newValue);
-    });  
+    .then(res => {
+      console.log(res);  
+    })
   }
 
   return (
@@ -90,6 +90,7 @@ function Markdown() {
             value={selectedNote.content}
             onChange={(newContent) => setSelectedNote({...selectedNote, content: newContent})}
           />
+          <button onClick={updateNote}>update</button>
         </div>
       : null} 
 
