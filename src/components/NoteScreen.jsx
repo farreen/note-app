@@ -28,8 +28,21 @@ const NoteEditable = ({selectedNote, setSelectedNote, updateNote}) => {
   )
 }
 
+const NoteList = ({noteList, setSelectedNote}) => {
+  return (
+    <div style={{width: 200, backgroundColor: 'lightgray'}}>
+      <ul>
+        {noteList.map((note) => (
+          <li key={note.id}>    
+            <a href="javascript:void 0" onClick={() => setSelectedNote(note)}>{note.title}</a>
+          </li>  
+        ))}
+      </ul>
+    </div>
+  )
+}
 
-function Markdown() {
+function NoteScreen() {
   const [title, setTitle] = React.useState();
   const [content, setContent] = React.useState();
   const [noteList, setnoteList] = React.useState([]);
@@ -94,15 +107,7 @@ function Markdown() {
     
   return (
     <div>
-      <div style={{width: 200, backgroundColor: 'lightgray'}}>
-        <ul>
-          {noteList.map((note, index) => (
-            <li>    
-              <a href="javascript:void 0" onClick={() => setSelectedNote(note)}>{note.title}</a>
-            </li>  
-          ))}
-        </ul>
-      </div>
+      <NoteList noteList={noteList} setSelectedNote={setSelectedNote} />
 
       {selectedNote !== null? editing === false? 
         <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} /> :
@@ -128,4 +133,4 @@ function Markdown() {
   );
 }
 
-export default Markdown; 
+export default NoteScreen; 

@@ -1,10 +1,10 @@
 import React from 'react';
-import Markdown from './components/Markdown'
+import NoteScreen from './components/NoteScreen'
 
 const App = () => {
     return (
         <div>
-        <Markdown />
+        <NoteScreen />
         </div>
     );
 }
