@@ -43,28 +43,10 @@ const NoteList = ({noteList, setSelectedNote}) => {
 }
 
 function NoteScreen() {
-  const [title, setTitle] = React.useState();
-  const [content, setContent] = React.useState();
   const [noteList, setnoteList] = React.useState([]);
   const [selectedTitle, setSelectedTitle] = React.useState(null);
-  const [displayContent, setDisplayContent] = React.useState(null);  
-  const [id, setId] = React.useState();
   const [selectedNote, setSelectedNote] = React.useState(null);  
   const [editing, setEditing] = React.useState(false);  
-
-  const getNote = () => {
-    fetch('http://localhost:8080/api/get')
-    .then((res) => {
-      if(res.ok) {
-        console.log(res);
-        return res.text();
-      }
-    })
-    .then(text => {
-      console.log(text);
-      setContent(text);
-    })
-  }
 
   const getListOfNote = () => {
     fetch('http://localhost:8080/api/list')
@@ -78,20 +60,7 @@ function NoteScreen() {
       setnoteList(list);
     })
   }
-  React.useEffect(getNote, [])
   React.useEffect(getListOfNote, [])
-    
-  const saveNote = () => {
-    const newValue = {title, content}; 
-    fetch('http://localhost:8080/api/insert',{
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(newValue)    
-    })
-    .then(res => {
-      console.log(res);
-    })
-  }
 
   const updateNote = () => {
     const note = selectedNote;
@@ -113,22 +82,6 @@ function NoteScreen() {
         <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} /> :
         <NoteEditable selectedNote={selectedNote} setSelectedNote={setSelectedNote} updateNote={updateNote} />
       :null}
-
-      <div style={{marginLeft: 200}}>
-        <input
-          type = "text"
-          onChange={({target: {value}}) => setTitle(value)}
-        />
-      </div>
-      <div style={{marginLeft: 200}}>
-        <MDEditor
-          value={content}
-          onChange={setContent}
-        />
-      </div>
-      <div style={{marginLeft: 200}}>
-        <button onClick={saveNote}>Save note</button>
-      </div>
     </div>
   );
 }
