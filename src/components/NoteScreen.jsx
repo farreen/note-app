@@ -8,6 +8,7 @@ const NoteReadOnly = ({selectedNote, setEditing}) => {
       <MDEditor.Markdown source={selectedNote.title} style={{fontSize: "24pt", fontWeight: "bold"}} />
       <MDEditor.Markdown source={selectedNote.content} />
       <button onClick={() => setEditing(true)}>Edit</button>
+      <button>add note</button>
     </div>
   )
 }
@@ -19,7 +20,7 @@ const NoteEditable = ({selectedNote, setSelectedNote, updateNote}) => {
         value={selectedNote.title} 
         onChange={(e) => setSelectedNote({...selectedNote, title: e.target.value})}
       />
-      <MDEditor 
+      <MDEditor  
         value={selectedNote.content}
         onChange={(newContent) => setSelectedNote({...selectedNote, content: newContent})}
       />
@@ -30,7 +31,7 @@ const NoteEditable = ({selectedNote, setSelectedNote, updateNote}) => {
 
 const NoteList = ({noteList, setSelectedNote}) => {
   return (
-    <div style={{width: 200, backgroundColor: 'lightgray'}}>
+      <div>
       <ul>
         {noteList.map((note) => (
           <li key={note.id}>    
