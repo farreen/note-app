@@ -1,9 +1,9 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
 
-const NoteReadOnly = ({ selectedNote, setEditing, style }) => {
+const NoteReadOnly = ({ selectedNote, setEditing }) => {
   return (
-    <div style={style}>
+    <div>
       <MDEditor.Markdown source={selectedNote.id} />
       <MDEditor.Markdown
         source={selectedNote.title}
@@ -16,9 +16,9 @@ const NoteReadOnly = ({ selectedNote, setEditing, style }) => {
   );
 };
 
-const NoteEditable = ({ selectedNote, setSelectedNote, updateNote, style }) => {
+const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
   return (
-    <div style={style}>
+    <div>
       <input
         type="text"
         value={selectedNote.title}
