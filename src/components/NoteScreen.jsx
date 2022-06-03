@@ -50,7 +50,7 @@ function NoteScreen() {
   const [editing, setEditing] = React.useState(false);  
 
   const getListOfNote = () => {
-    fetch('http://localhost:8080/api/list')
+    fetch('http://localhost:20959/api/list')
     .then(res => {
       if(res.ok){
         return res.json();
@@ -65,7 +65,7 @@ function NoteScreen() {
 
   const updateNote = () => {
     const note = selectedNote;
-    fetch('http://localhost:8080/api/update',{
+    fetch('http://localhost:20959/api/update',{
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(note)
