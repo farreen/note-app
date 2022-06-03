@@ -1,9 +1,9 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
 
-const NoteReadOnly = ({ selectedNote, setEditing }) => {
+const NoteReadOnly = ({ selectedNote, setEditing, style }) => {
   return (
-    <div>
+    <div style={style}>
       <MDEditor.Markdown source={selectedNote.id} />
       <MDEditor.Markdown
         source={selectedNote.title}
@@ -16,9 +16,9 @@ const NoteReadOnly = ({ selectedNote, setEditing }) => {
   );
 };
 
-const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
+const NoteEditable = ({ selectedNote, setSelectedNote, updateNote, style }) => {
   return (
-    <div>
+    <div style={style}>
       <input
         type="text"
         value={selectedNote.title}
@@ -37,9 +37,9 @@ const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
   );
 };
 
-const NoteList = ({ noteList, setSelectedNote }) => {
+const NoteList = ({ noteList, setSelectedNote, style }) => {
   return (
-    <div>
+    <div style={style}>
       <ul>
         {noteList.map((note) => (
           <li key={note.id}>
@@ -84,15 +84,26 @@ function NoteScreen() {
     });
   };
 
+  const leftPanelStyle = { float: "left", width: "20%" };
+  const rightPanelStyle = { float: "left", width: "80%" };
   return (
     <div>
-      <NoteList noteList={noteList} setSelectedNote={setSelectedNote} />
+      <NoteList
+        style={leftPanelStyle}
+        noteList={noteList}
+        setSelectedNote={setSelectedNote}
+      />
 
       {selectedNote !== null ? (
         editing === false ? (
-          <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} />
+          <NoteReadOnly
+            style={rightPanelStyle}
+            selectedNote={selectedNote}
+            setEditing={setEditing}
+          />
         ) : (
           <NoteEditable
+            style={rightPanelStyle}
             selectedNote={selectedNote}
             setSelectedNote={setSelectedNote}
             updateNote={updateNote}
