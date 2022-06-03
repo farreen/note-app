@@ -94,22 +94,19 @@ function NoteScreen() {
         setSelectedNote={setSelectedNote}
       />
 
-      {selectedNote !== null ? (
-        editing === false ? (
-          <NoteReadOnly
-            style={rightPanelStyle}
-            selectedNote={selectedNote}
-            setEditing={setEditing}
-          />
-        ) : (
-          <NoteEditable
-            style={rightPanelStyle}
-            selectedNote={selectedNote}
-            setSelectedNote={setSelectedNote}
-            updateNote={updateNote}
-          />
-        )
-      ) : null}
+      <div style={rightPanelStyle}>
+        {selectedNote !== null ? (
+          editing === false ? (
+            <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} />
+          ) : (
+            <NoteEditable
+              selectedNote={selectedNote}
+              setSelectedNote={setSelectedNote}
+              updateNote={updateNote}
+            />
+          )
+        ) : null}
+      </div>
     </div>
   );
 }
