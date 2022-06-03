@@ -37,9 +37,9 @@ const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
   );
 };
 
-const NoteList = ({ noteList, setSelectedNote, style }) => {
+const NoteList = ({ noteList, setSelectedNote }) => {
   return (
-    <div style={style}>
+    <div>
       <ul>
         {noteList.map((note) => (
           <li key={note.id}>
@@ -88,11 +88,9 @@ function NoteScreen() {
   const rightPanelStyle = { float: "left", width: "80%" };
   return (
     <div>
-      <NoteList
-        style={leftPanelStyle}
-        noteList={noteList}
-        setSelectedNote={setSelectedNote}
-      />
+      <div style={leftPanelStyle}>
+        <NoteList noteList={noteList} setSelectedNote={setSelectedNote} />
+      </div>
 
       <div style={rightPanelStyle}>
         {selectedNote !== null ? (
