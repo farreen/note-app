@@ -28,6 +28,7 @@ const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
       />
       <MDEditor
         value={selectedNote.content}
+        height={500}
         onChange={(newContent) =>
           setSelectedNote({ ...selectedNote, content: newContent })
         }
