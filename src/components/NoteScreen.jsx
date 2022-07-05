@@ -1,7 +1,7 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
 
-const NoteReadOnly = ({ selectedNote, setEditing }) => {
+const NoteReadOnly = ({ selectedNote, setEditing, setNewNote }) => {
   return (
     <div>
       <MDEditor.Markdown source={selectedNote.id} />
@@ -11,7 +11,7 @@ const NoteReadOnly = ({ selectedNote, setEditing }) => {
       />
       <MDEditor.Markdown source={selectedNote.content} />
       <button onClick={() => setEditing(true)}>Edit</button>
-      <button>add note</button>
+      <button onClick={() => setNewNote(true)}>Add note</button>
     </div>
   );
 };
@@ -54,11 +54,31 @@ const NoteList = ({ noteList, setSelectedNote }) => {
   );
 };
 
+
+const AddNote = ({content, setContent, title, setTitle, addNewNote}) => {
+  return (
+    <div>
+      <input 
+        type="text"
+        value={title}
+        onChange={({target: {value}}) => setTitle(value)}
+      />    
+      <MDEditor
+        value={content}
+        onChange={setContent}
+      />
+      <button onClick={addNewNote}>Save</button>
+    </div>
+  );
+};
+
 function NoteScreen() {
   const [noteList, setnoteList] = React.useState([]);
-  const [selectedTitle, setSelectedTitle] = React.useState(null);
   const [selectedNote, setSelectedNote] = React.useState(null);
   const [editing, setEditing] = React.useState(false);
+  const [title, setTitle] = React.useState();
+  const [content, setContent] = React.useState();
+  const [newNote, setNewNote] = React.useState(false);
 
   const getListOfNote = () => {
     fetch("http://localhost:20959/api/list")
@@ -84,6 +104,17 @@ function NoteScreen() {
       console.log(res);
     });
   };
+  
+  const addNewNote = () => {
+    const note = {title,content};
+    fetch("http://localhost:20959/api/insert", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body:JSON.stringify(note),
+    }).then((res) => {
+      console.log(res)
+    });
+  };
 
   const leftPanelStyle = { float: "left", width: "20%" };
   const rightPanelStyle = { float: "left", width: "80%" };
@@ -96,7 +127,7 @@ function NoteScreen() {
       <div style={rightPanelStyle}>
         {selectedNote !== null ? (
           editing === false ? (
-            <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} />
+            <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} setNewNote={setNewNote} />
           ) : (
             <NoteEditable
               selectedNote={selectedNote}
@@ -104,6 +135,11 @@ function NoteScreen() {
               updateNote={updateNote}
             />
           )
+        ) : null}
+      </div>
+      <div style={rightPanelStyle}>  
+        {newNote !== false ? ( 
+          <AddNote content={content} setContent={setContent} title={title} setTitle={setTitle} addNewNote={addNewNote}/>
         ) : null}
       </div>
     </div>
