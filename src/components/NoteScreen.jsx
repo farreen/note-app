@@ -11,7 +11,6 @@ const NoteReadOnly = ({ selectedNote, setEditing, setNewNote }) => {
       />
       <MDEditor.Markdown source={selectedNote.content} />
       <button onClick={() => setEditing(true)}>Edit</button>
-      <button onClick={() => setNewNote(true)}>Add note</button>
     </div>
   );
 };
@@ -38,7 +37,7 @@ const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
   );
 };
 
-const NoteList = ({ noteList, setSelectedNote }) => {
+const NoteList = ({ noteList, setSelectedNote, setNewNote }) => {
   return (
     <div>
       <ul>
@@ -50,23 +49,20 @@ const NoteList = ({ noteList, setSelectedNote }) => {
           </li>
         ))}
       </ul>
+      <button onClick={() => setNewNote(true)}>Add note</button>
     </div>
   );
 };
 
-
-const AddNote = ({content, setContent, title, setTitle, addNewNote}) => {
+const AddNote = ({ content, setContent, title, setTitle, addNewNote }) => {
   return (
     <div>
-      <input 
+      <input
         type="text"
         value={title}
-        onChange={({target: {value}}) => setTitle(value)}
-      />    
-      <MDEditor
-        value={content}
-        onChange={setContent}
+        onChange={({ target: { value } }) => setTitle(value)}
       />
+      <MDEditor value={content} onChange={setContent} />
       <button onClick={addNewNote}>Save</button>
     </div>
   );
@@ -104,15 +100,15 @@ function NoteScreen() {
       console.log(res);
     });
   };
-  
+
   const addNewNote = () => {
-    const note = {title,content};
+    const note = { title, content };
     fetch("http://localhost:20959/api/insert", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body:JSON.stringify(note),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(note),
     }).then((res) => {
-      console.log(res)
+      console.log(res);
     });
   };
 
@@ -121,13 +117,17 @@ function NoteScreen() {
   return (
     <div>
       <div style={leftPanelStyle}>
-        <NoteList noteList={noteList} setSelectedNote={setSelectedNote} />
+        <NoteList
+          noteList={noteList}
+          setSelectedNote={setSelectedNote}
+          setNewNote={setNewNote}
+        />
       </div>
 
       <div style={rightPanelStyle}>
         {selectedNote !== null ? (
           editing === false ? (
-            <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} setNewNote={setNewNote} />
+            <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} />
           ) : (
             <NoteEditable
               selectedNote={selectedNote}
@@ -137,9 +137,15 @@ function NoteScreen() {
           )
         ) : null}
       </div>
-      <div style={rightPanelStyle}>  
-        {newNote !== false ? ( 
-          <AddNote content={content} setContent={setContent} title={title} setTitle={setTitle} addNewNote={addNewNote}/>
+      <div style={rightPanelStyle}>
+        {newNote !== false ? (
+          <AddNote
+            content={content}
+            setContent={setContent}
+            title={title}
+            setTitle={setTitle}
+            addNewNote={addNewNote}
+          />
         ) : null}
       </div>
     </div>
