@@ -54,7 +54,7 @@ const NoteList = ({ noteList, setSelectedNote, setNewNote }) => {
   );
 };
 
-const AddNote = ({ content, setContent, title, setTitle, addNewNote }) => {
+const AddNote = ({ content, setContent, title, setTitle, addNewNote, discard }) => {
   return (
     <div>
       <input
@@ -64,6 +64,7 @@ const AddNote = ({ content, setContent, title, setTitle, addNewNote }) => {
       />
       <MDEditor value={content} onChange={setContent} />
       <button onClick={addNewNote}>Save</button>
+      <button onClick={discard}>Discard</button>
     </div>
   );
 };
@@ -132,6 +133,7 @@ function NoteScreen() {
             title={title}
             setTitle={setTitle}
             addNewNote={addNewNote}
+            discard={() => setNewNote(false) }
           />
         ) : selectedNote !== null ? (
           editing === false ? (
