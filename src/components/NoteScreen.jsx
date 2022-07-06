@@ -1,7 +1,7 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
 
-const NoteReadOnly = ({ selectedNote, setEditing }) => {
+const NoteReadOnly = ({ selectedNote, edit }) => {
   return (
     <div>
       <MDEditor.Markdown source={selectedNote.id} />
@@ -10,12 +10,12 @@ const NoteReadOnly = ({ selectedNote, setEditing }) => {
         style={{ fontSize: "24pt", fontWeight: "bold" }}
       />
       <MDEditor.Markdown source={selectedNote.content} />
-      <button onClick={() => setEditing(true)}>Edit</button>
+      <button onClick={() => edit()}>Edit</button>
     </div>
   );
 };
 
-const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
+const NoteEditable = ({ selectedNote, setSelectedNote, updateNote, discard }) => {
   return (
     <div>
       <input
@@ -33,14 +33,14 @@ const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
         }
       />
       <button onClick={updateNote}>update</button>
+      <button onClick={discard}>discard</button>
     </div>
   );
 };
 
-const NoteList = ({ noteList, setSelectedNote, setNewNote }) => {
+const NoteList = ({ noteList, setSelectedNote }) => {
   return (
     <div>
-      <button onClick={() => setNewNote(true)}>Add note</button>
       <ul>
         {noteList.map((note) => (
           <li key={note.id}>
@@ -54,7 +54,14 @@ const NoteList = ({ noteList, setSelectedNote, setNewNote }) => {
   );
 };
 
-const AddNote = ({ content, setContent, title, setTitle, addNewNote, discard }) => {
+const AddNote = ({
+  content,
+  setContent,
+  title,
+  setTitle,
+  addNewNote,
+  discard,
+}) => {
   return (
     <div>
       <input
@@ -72,11 +79,9 @@ const AddNote = ({ content, setContent, title, setTitle, addNewNote, discard }) 
 function NoteScreen() {
   const [noteList, setnoteList] = React.useState([]);
   const [selectedNote, setSelectedNote] = React.useState(null);
-  const [editing, setEditing] = React.useState(false);
   const [title, setTitle] = React.useState();
   const [content, setContent] = React.useState();
-  const [newNote, setNewNote] = React.useState(false);
-
+  const [view, setView] = React.useState(undefined);
   const getListOfNote = () => {
     fetch("http://localhost:20959/api/list")
       .then((res) => {
@@ -115,37 +120,54 @@ function NoteScreen() {
 
   const leftPanelStyle = { float: "left", width: "20%" };
   const rightPanelStyle = { float: "left", width: "80%" };
-  return (
-    <div>
-      <div style={leftPanelStyle}>
-        <NoteList
-          noteList={noteList}
-          setSelectedNote={setSelectedNote}
-          setNewNote={setNewNote}
-        />
-      </div>
 
-      <div style={rightPanelStyle}>
-        {newNote !== false ? (
+  const RightPanel = ({ view }) => {
+    console.log("view: ", view);
+    switch (view) {
+      case "add-note":
+        return (
           <AddNote
             content={content}
             setContent={setContent}
             title={title}
             setTitle={setTitle}
             addNewNote={addNewNote}
-            discard={() => setNewNote(false) }
+            discard={() => setView(undefined)}
           />
-        ) : selectedNote !== null ? (
-          editing === false ? (
-            <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} />
-          ) : (
-            <NoteEditable
-              selectedNote={selectedNote}
-              setSelectedNote={setSelectedNote}
-              updateNote={updateNote}
-            />
-          )
-        ) : null}
+        );
+      case "read-note":
+        return (
+            <NoteReadOnly selectedNote={selectedNote} edit={() => setView("edit-note")} />
+        );
+      case "edit-note":
+        return (
+          <NoteEditable
+            selectedNote={selectedNote}
+            setSelectedNote={setSelectedNote}
+            updateNote={updateNote}
+            discard={() => setView("read-note")}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div>
+      <div style={leftPanelStyle}>
+        <button onClick={() => setView("add-note")}>Add note</button>
+        <NoteList
+          noteList={noteList}
+          setSelectedNote={(note) => {
+            setSelectedNote(note);
+            setView("read-note");
+          }}
+        />
+      </div>
+
+      <div style={rightPanelStyle}>
+        <RightPanel view={view} />
       </div>
     </div>
   );
