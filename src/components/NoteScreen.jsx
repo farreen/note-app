@@ -1,7 +1,7 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
 
-const NoteReadOnly = ({ selectedNote, setEditing, setNewNote }) => {
+const NoteReadOnly = ({ selectedNote, setEditing }) => {
   return (
     <div>
       <MDEditor.Markdown source={selectedNote.id} />
@@ -40,6 +40,7 @@ const NoteEditable = ({ selectedNote, setSelectedNote, updateNote }) => {
 const NoteList = ({ noteList, setSelectedNote, setNewNote }) => {
   return (
     <div>
+      <button onClick={() => setNewNote(true)}>Add note</button>
       <ul>
         {noteList.map((note) => (
           <li key={note.id}>
@@ -49,7 +50,6 @@ const NoteList = ({ noteList, setSelectedNote, setNewNote }) => {
           </li>
         ))}
       </ul>
-      <button onClick={() => setNewNote(true)}>Add note</button>
     </div>
   );
 };
@@ -125,7 +125,15 @@ function NoteScreen() {
       </div>
 
       <div style={rightPanelStyle}>
-        {selectedNote !== null ? (
+        {newNote !== false ? (
+          <AddNote
+            content={content}
+            setContent={setContent}
+            title={title}
+            setTitle={setTitle}
+            addNewNote={addNewNote}
+          />
+        ) : selectedNote !== null ? (
           editing === false ? (
             <NoteReadOnly selectedNote={selectedNote} setEditing={setEditing} />
           ) : (
@@ -135,17 +143,6 @@ function NoteScreen() {
               updateNote={updateNote}
             />
           )
-        ) : null}
-      </div>
-      <div style={rightPanelStyle}>
-        {newNote !== false ? (
-          <AddNote
-            content={content}
-            setContent={setContent}
-            title={title}
-            setTitle={setTitle}
-            addNewNote={addNewNote}
-          />
         ) : null}
       </div>
     </div>
