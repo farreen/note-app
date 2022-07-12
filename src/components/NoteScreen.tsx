@@ -30,8 +30,6 @@ const NoteEditable = ({ discard, back, note }) => {
     });
     console.log("THIRD LOG");
   };
-    // updatedNote.title  = e.target.value
-    // updatedNote.content = newContent
   return (
     <div>
       <input
@@ -114,11 +112,8 @@ function NoteScreen() {
   };
   React.useEffect(getListOfNote, []);
 
-  const leftPanelStyle = { float: "left", width: "20%" };
-  const rightPanelStyle = { float: "left", width: "80%" };
-
   const selectedNote = noteList.find((note) => note.id === selectedNoteId);
-  
+
   const RightPanel = ({ view }) => {
     console.log("view: ", view);
     switch (view) {
@@ -146,9 +141,10 @@ function NoteScreen() {
         return null;
     }
   };
+
   return (
     <div>
-      <div style={leftPanelStyle}>
+      <div style={{ float: "left", width: "20%" }}>
         <button onClick={() => setView("add-note")}>Add note</button>
         <NoteList
           noteList={noteList}
@@ -160,7 +156,7 @@ function NoteScreen() {
         />
       </div>
 
-      <div style={rightPanelStyle}>
+      <div style={{ float: "right", width: "80%" }}>
         <RightPanel view={view} />
       </div>
     </div>
