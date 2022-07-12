@@ -18,15 +18,20 @@ const NoteReadOnly = ({ selectedNote, edit }) => {
 const NoteEditable = ({ discard, back, note }) => {
   const [updatedNote, updateNote] = React.useState(note);
   const saveNote = () => {
+    console.log("FIRST LOG");
     fetch("http://localhost:20959/api/update", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedNote),
     }).then((res) => {
+      console.log("SECOND LOG");
       console.log(res);
       back();
     });
+    console.log("THIRD LOG");
   };
+    // updatedNote.title  = e.target.value
+    // updatedNote.content = newContent
   return (
     <div>
       <input
@@ -93,6 +98,7 @@ const AddNote = ({ discard }) => {
 function NoteScreen() {
   const [noteList, setnoteList] = React.useState([]);
   const [selectedNoteId, setSelectedNoteId] = React.useState(null);
+  // const [selectedNote, setSelectedNote] = React.useState(null);
   const [view, setView] = React.useState(undefined);
   const getListOfNote = () => {
     fetch("http://localhost:20959/api/list")
@@ -112,7 +118,7 @@ function NoteScreen() {
   const rightPanelStyle = { float: "left", width: "80%" };
 
   const selectedNote = noteList.find((note) => note.id === selectedNoteId);
-  console.log("selectedNote: ", selectedNote, noteList, selectedNoteId);
+  
   const RightPanel = ({ view }) => {
     console.log("view: ", view);
     switch (view) {
@@ -148,6 +154,7 @@ function NoteScreen() {
           noteList={noteList}
           onSelect={(note) => {
             setSelectedNoteId(note.id);
+            // setSelectedNote(note);
             setView("read-note");
           }}
         />
