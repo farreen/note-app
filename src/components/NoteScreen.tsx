@@ -1,6 +1,12 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
 
+type Note = {
+  id: string;
+  title: string;
+  content: string;
+};
+
 const NoteReadOnly = ({ selectedNote, edit }) => {
   return (
     <div>
@@ -50,7 +56,11 @@ const NoteEditable = ({ discard, back, note }) => {
   );
 };
 
-const NoteList = ({ noteList, onSelect }) => {
+type NoteListProps = {
+  noteList: Note[];
+  onSelect: (Note) => void;
+};
+const NoteList = ({ noteList, onSelect }: NoteListProps) => {
   return (
     <div>
       <ul>
