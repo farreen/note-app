@@ -7,21 +7,32 @@ type Note = {
   content: string;
 };
 
-const NoteReadOnly = ({ selectedNote, edit }) => {
+type NoteReadOnlyProps = {
+  note: Note;
+  edit: () => void;
+};
+
+const NoteReadOnly = ({ note, edit }: NoteReadOnlyProps) => {
   return (
     <div>
-      <MDEditor.Markdown source={selectedNote.id} />
+      <MDEditor.Markdown source={note.id} />
       <MDEditor.Markdown
-        source={selectedNote.title}
+        source={note.title}
         style={{ fontSize: "24pt", fontWeight: "bold" }}
       />
-      <MDEditor.Markdown source={selectedNote.content} />
+      <MDEditor.Markdown source={note.content} />
       <button onClick={() => edit()}>Edit</button>
     </div>
   );
 };
 
-const NoteEditable = ({ discard, back, note }) => {
+type NoteEditableProps = {
+  discard: () => void;
+  back: () => void;
+  note: Note;
+};
+
+const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
   const [updatedNote, updateNote] = React.useState(note);
   const saveNote = () => {
     console.log("FIRST LOG");
@@ -60,6 +71,7 @@ type NoteListProps = {
   noteList: Note[];
   onSelect: (Note) => void;
 };
+
 const NoteList = ({ noteList, onSelect }: NoteListProps) => {
   return (
     <div>
@@ -76,7 +88,11 @@ const NoteList = ({ noteList, onSelect }: NoteListProps) => {
   );
 };
 
-const AddNote = ({ discard }) => {
+type AddNoteProps = {
+  discard: () => void;
+};
+
+const AddNote = ({ discard }: AddNoteProps) => {
   const [content, setContent] = React.useState("");
   const [title, setTitle] = React.useState("");
   const addNewNote = () => {
@@ -122,19 +138,21 @@ function NoteScreen() {
   };
   React.useEffect(getListOfNote, []);
 
-  const selectedNote = noteList.find((note) => note.id === selectedNoteId);
+  const selectedNote: Note = noteList.find(
+    (note) => note.id === selectedNoteId
+  );
 
-  const RightPanel = ({ view }) => {
+  type RightPanelProps = {
+    view: string;
+  };
+  const RightPanel = ({ view }: RightPanelProps) => {
     console.log("view: ", view);
     switch (view) {
       case "add-note":
         return <AddNote discard={() => setView(undefined)} />;
       case "read-note":
         return (
-          <NoteReadOnly
-            selectedNote={selectedNote}
-            edit={() => setView("edit-note")}
-          />
+          <NoteReadOnly note={selectedNote} edit={() => setView("edit-note")} />
         );
       case "edit-note":
         return (
