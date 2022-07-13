@@ -58,7 +58,7 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
         value={updatedNote.content}
         height={500}
         onChange={(newContent) =>
-          updateNote({ ...updatedNote, content: newContent })
+          updateNote({ ...updatedNote, content: newContent || "" })
         }
       />
       <button onClick={saveNote}>update</button>
@@ -69,7 +69,7 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
 
 type NoteListProps = {
   noteList: Note[];
-  onSelect: (Note) => void;
+  onSelect: (note: Note) => void;
 };
 
 const NoteList = ({ noteList, onSelect }: NoteListProps) => {
@@ -112,7 +112,7 @@ const AddNote = ({ discard }: AddNoteProps) => {
         value={title}
         onChange={({ target: { value } }) => setTitle(value)}
       />
-      <MDEditor value={content} onChange={setContent} />
+      <MDEditor value={content} onChange={(value) => setContent(value || "")} />
       <button onClick={addNewNote}>Save</button>
       <button onClick={discard}>Discard</button>
     </div>
@@ -120,10 +120,12 @@ const AddNote = ({ discard }: AddNoteProps) => {
 };
 
 function NoteScreen() {
-  const [noteList, setnoteList] = React.useState([]);
-  const [selectedNoteId, setSelectedNoteId] = React.useState(null);
+  const [noteList, setnoteList] = React.useState<Note[]>([]);
+  const [selectedNoteId, setSelectedNoteId] = React.useState<string | null>(
+    null
+  );
   // const [selectedNote, setSelectedNote] = React.useState(null);
-  const [view, setView] = React.useState(undefined);
+  const [view, setView] = React.useState<string | undefined>(undefined);
   const getListOfNote = () => {
     fetch("http://localhost:20959/api/list")
       .then((res) => {
@@ -138,12 +140,12 @@ function NoteScreen() {
   };
   React.useEffect(getListOfNote, []);
 
-  const selectedNote: Note = noteList.find(
+  const selectedNote: Note | undefined = noteList.find(
     (note) => note.id === selectedNoteId
   );
 
   type RightPanelProps = {
-    view: string;
+    view?: string;
   };
   const RightPanel = ({ view }: RightPanelProps) => {
     console.log("view: ", view);
@@ -152,12 +154,15 @@ function NoteScreen() {
         return <AddNote discard={() => setView(undefined)} />;
       case "read-note":
         return (
-          <NoteReadOnly note={selectedNote} edit={() => setView("edit-note")} />
+          <NoteReadOnly
+            note={selectedNote!}
+            edit={() => setView("edit-note")}
+          />
         );
       case "edit-note":
         return (
           <NoteEditable
-            note={selectedNote}
+            note={selectedNote!}
             back={() => {
               getListOfNote();
               setView("read-note");
