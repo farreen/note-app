@@ -119,13 +119,15 @@ const AddNote = ({ discard }: AddNoteProps) => {
   );
 };
 
+type View = "read-note" | "edit-note" | "add-note" | "none";
+
 function NoteScreen() {
   const [noteList, setnoteList] = React.useState<Note[]>([]);
   const [selectedNoteId, setSelectedNoteId] = React.useState<string | null>(
     null
   );
-  // const [selectedNote, setSelectedNote] = React.useState(null);
-  const [view, setView] = React.useState<string | undefined>(undefined);
+  const [view, setView] = React.useState<View>("none");
+
   const getListOfNote = () => {
     fetch("http://localhost:20959/api/list")
       .then((res) => {
@@ -145,13 +147,13 @@ function NoteScreen() {
   );
 
   type RightPanelProps = {
-    view?: string;
+    view: View;
   };
   const RightPanel = ({ view }: RightPanelProps) => {
     console.log("view: ", view);
     switch (view) {
       case "add-note":
-        return <AddNote discard={() => setView(undefined)} />;
+        return <AddNote discard={() => setView("none")} />;
       case "read-note":
         return (
           <NoteReadOnly
@@ -183,7 +185,6 @@ function NoteScreen() {
           noteList={noteList}
           onSelect={(note) => {
             setSelectedNoteId(note.id);
-            // setSelectedNote(note);
             setView("read-note");
           }}
         />
