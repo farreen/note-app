@@ -131,17 +131,11 @@ function NoteScreen() {
   );
   const [view, setView] = React.useState<View>("none");
 
-  const getListOfNote = () => {
-    return fetch("http://localhost:20959/api/list")
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-      })
-      .then((list) => {
-        console.log("list", list);
-        setnoteList(list);
-      });
+  const getListOfNote = async () => {
+    let response = await fetch("http://localhost:20959/api/list");
+    let list = await response.json();
+    console.log("list", list);
+    setnoteList(list);
   };
 
   React.useEffect(() => void getListOfNote(), []);
@@ -161,11 +155,10 @@ function NoteScreen() {
         return (
           <AddNote
             discard={() => setView("none")}
-            display={(id: string) => {
-              getListOfNote().then(() => {
-                setSelectedNoteId(id);
-                setView("read-note");
-              });
+            display={async (id: string) => {
+              await getListOfNote();
+              setSelectedNoteId(id);
+              setView("read-note");
             }}
           />
         );
