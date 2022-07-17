@@ -90,9 +90,10 @@ const NoteList = ({ noteList, onSelect }: NoteListProps) => {
 
 type AddNoteProps = {
   discard: () => void;
+  display: (id: string) => void;
 };
 
-const AddNote = ({ discard }: AddNoteProps) => {
+const AddNote = ({ discard, display }: AddNoteProps) => {
   const [content, setContent] = React.useState("");
   const [title, setTitle] = React.useState("");
   const addNewNote = () => {
@@ -102,7 +103,9 @@ const AddNote = ({ discard }: AddNoteProps) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(note),
     }).then((res) => {
-      console.log(res);
+      res.text().then((id: string) => {
+        display(id);
+      });
     });
   };
   return (
@@ -129,7 +132,7 @@ function NoteScreen() {
   const [view, setView] = React.useState<View>("none");
 
   const getListOfNote = () => {
-    fetch("http://localhost:20959/api/list")
+    return fetch("http://localhost:20959/api/list")
       .then((res) => {
         if (res.ok) {
           return res.json();
@@ -140,7 +143,8 @@ function NoteScreen() {
         setnoteList(list);
       });
   };
-  React.useEffect(getListOfNote, []);
+
+  React.useEffect(() => void getListOfNote(), []);
 
   const selectedNote: Note | undefined = noteList.find(
     (note) => note.id === selectedNoteId
@@ -149,11 +153,22 @@ function NoteScreen() {
   type RightPanelProps = {
     view: View;
   };
+
   const RightPanel = ({ view }: RightPanelProps) => {
     console.log("view: ", view);
     switch (view) {
       case "add-note":
-        return <AddNote discard={() => setView("none")} />;
+        return (
+          <AddNote
+            discard={() => setView("none")}
+            display={(id: string) => {
+              getListOfNote().then(() => {
+                setSelectedNoteId(id);
+                setView("read-note");
+              });
+            }}
+          />
+        );
       case "read-note":
         return (
           <NoteReadOnly
