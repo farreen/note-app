@@ -34,18 +34,13 @@ type NoteEditableProps = {
 
 const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
   const [updatedNote, updateNote] = React.useState(note);
-  const saveNote = () => {
-    console.log("FIRST LOG");
-    fetch("http://localhost:20959/api/update", {
+  const saveNote = async () => {
+    await fetch("http://localhost:20959/api/update", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedNote),
-    }).then((res) => {
-      console.log("SECOND LOG");
-      console.log(res);
-      back();
     });
-    console.log("THIRD LOG");
+    back();
   };
   return (
     <div>
@@ -96,17 +91,16 @@ type AddNoteProps = {
 const AddNote = ({ discard, display }: AddNoteProps) => {
   const [content, setContent] = React.useState("");
   const [title, setTitle] = React.useState("");
-  const addNewNote = () => {
+  const addNewNote = async () => {
     const note = { title, content };
-    fetch("http://localhost:20959/api/insert", {
+    let response = await fetch("http://localhost:20959/api/insert", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(note),
-    }).then((res) => {
-      res.text().then((id: string) => {
-        display(id);
-      });
     });
+    let id: string = await response.text();
+    console.log("id..", id);
+    display(id);
   };
   return (
     <div>
