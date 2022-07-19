@@ -93,13 +93,12 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
   const [title, setTitle] = React.useState("");
   const addNewNote = async () => {
     const note = { title, content };
-    let response = await fetch("http://localhost:20959/api/insert", {
+    const response = await fetch("http://localhost:20959/api/insert", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(note),
     });
-    let id: string = await response.text();
-    console.log("id..", id);
+    const id: string = await response.text();
     display(id);
   };
   return (
