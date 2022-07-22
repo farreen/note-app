@@ -10,9 +10,10 @@ type Note = {
 type NoteReadOnlyProps = {
   note: Note;
   edit: () => void;
+  Delete: () => void;
 };
 
-const NoteReadOnly = ({ note, edit }: NoteReadOnlyProps) => {
+const NoteReadOnly = ({ note, edit, Delete }: NoteReadOnlyProps) => {
   return (
     <div>
       <MDEditor.Markdown source={note.id} />
@@ -22,6 +23,7 @@ const NoteReadOnly = ({ note, edit }: NoteReadOnlyProps) => {
       />
       <MDEditor.Markdown source={note.content} />
       <button onClick={() => edit()}>Edit</button>
+      <button onClick={() => Delete()}>Delete</button>
     </div>
   );
 };
@@ -115,7 +117,32 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
   );
 };
 
-type View = "read-note" | "edit-note" | "add-note" | "none";
+type DeleteNoteProps = {
+  selectedNote: Note;
+  back: () => void;
+  changeView: () => void;
+};
+const DeleteNote = ({ selectedNote, back, changeView }: DeleteNoteProps) => {
+  const deleteNote = async () => {
+    const note: Note = selectedNote;
+    const response = await fetch("http://localhost:20959/api/deleteNote", {
+      method: "delete",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(note),
+    });
+    console.log("Response", response);
+    back();
+  };
+  return (
+    <div>
+      <p>Are you sure?</p>
+      <button onClick={deleteNote}>yes</button>
+      <button onClick={() => changeView()}>no</button>
+    </div>
+  );
+};
+
+type View = "read-note" | "edit-note" | "add-note" | "delete-note" | "none";
 
 function NoteScreen() {
   const [noteList, setnoteList] = React.useState<Note[]>([]);
@@ -160,6 +187,7 @@ function NoteScreen() {
           <NoteReadOnly
             note={selectedNote!}
             edit={() => setView("edit-note")}
+            Delete={() => setView("delete-note")}
           />
         );
       case "edit-note":
@@ -171,6 +199,17 @@ function NoteScreen() {
               setView("read-note");
             }}
             discard={() => setView("read-note")}
+          />
+        );
+      case "delete-note":
+        return (
+          <DeleteNote
+            selectedNote={selectedNote!}
+            back={() => {
+              getListOfNote();
+              setView("none");
+            }}
+            changeView={() => setView("read-note")}
           />
         );
       default:
