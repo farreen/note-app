@@ -10,20 +10,19 @@ type Note = {
 type NoteReadOnlyProps = {
   note: Note;
   edit: () => void;
-  Delete: () => void;
+  deleteNote: () => void;
 };
 
-const NoteReadOnly = ({ note, edit, Delete }: NoteReadOnlyProps) => {
+const NoteReadOnly = ({ note, edit, deleteNote }: NoteReadOnlyProps) => {
   return (
     <div>
-      <MDEditor.Markdown source={note.id} />
       <MDEditor.Markdown
         source={note.title}
         style={{ fontSize: "24pt", fontWeight: "bold" }}
       />
       <MDEditor.Markdown source={note.content} />
       <button onClick={() => edit()}>Edit</button>
-      <button onClick={() => Delete()}>Delete</button>
+      <button onClick={() => deleteNote()}>Delete</button>
     </div>
   );
 };
@@ -37,7 +36,7 @@ type NoteEditableProps = {
 const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
   const [updatedNote, updateNote] = React.useState(note);
   const saveNote = async () => {
-    await fetch("http://localhost:20959/api/update", {
+    await fetch("http://localhost:20959/api/notes", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedNote),
@@ -95,7 +94,7 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
   const [title, setTitle] = React.useState("");
   const addNewNote = async () => {
     const note = { title, content };
-    const response = await fetch("http://localhost:20959/api/insert", {
+    const response = await fetch("http://localhost:20959/api/notes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(note),
@@ -118,26 +117,35 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
 };
 
 type DeleteNoteProps = {
-  selectedNote: Note;
+  note: Note;
   back: () => void;
   changeView: () => void;
 };
-const DeleteNote = ({ selectedNote, back, changeView }: DeleteNoteProps) => {
+const DeleteNote = ({ note, back, changeView }: DeleteNoteProps) => {
   const deleteNote = async () => {
-    const note: Note = selectedNote;
-    const response = await fetch("http://localhost:20959/api/deleteNote", {
-      method: "delete",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(note),
-    });
+    const response = await fetch(
+      `http://localhost:20959/api/notes/${note.id}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        //body: JSON.stringify(id),
+      }
+    );
     console.log("Response", response);
     back();
   };
   return (
     <div>
-      <p>Are you sure?</p>
-      <button onClick={deleteNote}>yes</button>
-      <button onClick={() => changeView()}>no</button>
+      <div style={{ float: "left", width: "80%" }}>
+        <MDEditor.Markdown
+          source={note.title}
+          style={{ fontSize: "24pt", fontWeight: "bold" }}
+        />
+        <MDEditor.Markdown source={note.content} />
+        <p>Are you sure?</p>
+        <button onClick={deleteNote}>yes</button>
+        <button onClick={changeView}>no</button>
+      </div>
     </div>
   );
 };
@@ -152,7 +160,7 @@ function NoteScreen() {
   const [view, setView] = React.useState<View>("none");
 
   const getListOfNote = async () => {
-    let response = await fetch("http://localhost:20959/api/list");
+    let response = await fetch("http://localhost:20959/api/notes");
     let list = await response.json();
     console.log("list", list);
     setnoteList(list);
@@ -187,7 +195,7 @@ function NoteScreen() {
           <NoteReadOnly
             note={selectedNote!}
             edit={() => setView("edit-note")}
-            Delete={() => setView("delete-note")}
+            deleteNote={() => setView("delete-note")}
           />
         );
       case "edit-note":
@@ -204,7 +212,7 @@ function NoteScreen() {
       case "delete-note":
         return (
           <DeleteNote
-            selectedNote={selectedNote!}
+            note={selectedNote!}
             back={() => {
               getListOfNote();
               setView("none");
