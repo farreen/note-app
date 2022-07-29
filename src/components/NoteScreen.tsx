@@ -1,5 +1,6 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
+import { Icon } from "@blueprintjs/core";
 
 type Note = {
   id: string;
@@ -11,18 +12,45 @@ type NoteReadOnlyProps = {
   note: Note;
   edit: () => void;
   deleteNote: () => void;
+  cancel: () => void;
 };
 
-const NoteReadOnly = ({ note, edit, deleteNote }: NoteReadOnlyProps) => {
+const NoteReadOnly = ({
+  note,
+  edit,
+  deleteNote,
+  cancel,
+}: NoteReadOnlyProps) => {
   return (
     <div>
-      <MDEditor.Markdown
-        source={note.title}
-        style={{ fontSize: "24pt", fontWeight: "bold" }}
-      />
-      <MDEditor.Markdown source={note.content} />
-      <button onClick={() => edit()}>Edit</button>
-      <button onClick={() => deleteNote()}>Delete</button>
+      <div
+        style={{
+          backgroundColor: "lightyellow",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+          paddingBottom: "20px",
+        }}
+      >
+        <MDEditor.Markdown
+          source={note.title}
+          style={{ fontSize: "24pt", fontWeight: "bold" }}
+        />
+        <MDEditor.Markdown source={note.content} />
+      </div>
+      <div style={{ float: "right", width: "20%", marginTop: "5px" }}>
+        <Icon
+          style={{ margin: "10px", cursor: "pointer" }}
+          icon="edit"
+          onClick={() => edit()}
+        />
+        <Icon
+          color="#f00"
+          style={{ margin: "10px" }}
+          icon="trash"
+          onClick={() => deleteNote()}
+        />
+        <Icon style={{ margin: "10px" }} icon="undo" onClick={() => cancel()} />
+      </div>
     </div>
   );
 };
@@ -49,16 +77,25 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
         type="text"
         value={updatedNote.title}
         onChange={(e) => updateNote({ ...updatedNote, title: e.target.value })}
+        style={{ backgroundColor: "lightskyblue" }}
       />
       <MDEditor
+        style={{ backgroundColor: "lightskyblue" }}
         value={updatedNote.content}
         height={500}
         onChange={(newContent) =>
           updateNote({ ...updatedNote, content: newContent || "" })
         }
       />
-      <button onClick={saveNote}>update</button>
-      <button onClick={discard}>discard</button>
+      <div style={{ margin: "5px" }}>
+        <Icon icon="updated" color="#0f0" onClick={saveNote} />
+        <Icon
+          style={{ margin: "10px" }}
+          icon="delete"
+          color="#f00"
+          onClick={discard}
+        />
+      </div>
     </div>
   );
 };
@@ -105,13 +142,25 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
   return (
     <div>
       <input
+        style={{ backgroundColor: "#E5FFCC", paddingLeft: "5px" }}
         type="text"
         value={title}
         onChange={({ target: { value } }) => setTitle(value)}
       />
-      <MDEditor value={content} onChange={(value) => setContent(value || "")} />
-      <button onClick={addNewNote}>Save</button>
-      <button onClick={discard}>Discard</button>
+      <MDEditor
+        style={{ backgroundColor: "#E5FFCC" }}
+        value={content}
+        onChange={(value) => setContent(value || "")}
+      />
+      <div style={{ marginTop: "3px" }}>
+        <Icon icon="saved" color="#0f0" onClick={addNewNote} />
+        <Icon
+          icon="delete"
+          color="#f00"
+          style={{ margin: "10px" }}
+          onClick={discard}
+        />
+      </div>
     </div>
   );
 };
@@ -135,16 +184,27 @@ const DeleteNote = ({ note, back, changeView }: DeleteNoteProps) => {
     back();
   };
   return (
-    <div>
-      <div style={{ float: "left", width: "80%" }}>
+    <div style={{ float: "left", width: "80%" }}>
+      <div
+        style={{
+          backgroundColor: "lightgray",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+          paddingBottom: "20px",
+        }}
+      >
         <MDEditor.Markdown
           source={note.title}
-          style={{ fontSize: "24pt", fontWeight: "bold" }}
+          style={{
+            fontSize: "24pt",
+            fontWeight: "bold",
+          }}
         />
         <MDEditor.Markdown source={note.content} />
-        <p>Are you sure?</p>
-        <button onClick={deleteNote}>yes</button>
-        <button onClick={changeView}>no</button>
+      </div>
+      <div style={{ marginTop: "5px" }}>
+        <Icon color="#f00" icon="trash" onClick={deleteNote} />
+        <Icon style={{ margin: "20px" }} icon="undo" onClick={changeView} />
       </div>
     </div>
   );
@@ -196,6 +256,7 @@ function NoteScreen() {
             note={selectedNote!}
             edit={() => setView("edit-note")}
             deleteNote={() => setView("delete-note")}
+            cancel={() => setView("none")}
           />
         );
       case "edit-note":
@@ -227,8 +288,13 @@ function NoteScreen() {
 
   return (
     <div>
-      <div style={{ float: "left", width: "20%" }}>
-        <button onClick={() => setView("add-note")}>Add note</button>
+      <div style={{ float: "left", width: "20%", marginTop: "20px" }}>
+        <Icon
+          color="#00f"
+          icon="add"
+          style={{ marginLeft: "25px" }}
+          onClick={() => setView("add-note")}
+        />
         <NoteList
           noteList={noteList}
           onSelect={(note) => {
@@ -238,7 +304,7 @@ function NoteScreen() {
         />
       </div>
 
-      <div style={{ float: "right", width: "80%" }}>
+      <div style={{ float: "right", width: "80%", marginTop: "25px" }}>
         <RightPanel view={view} />
       </div>
     </div>
