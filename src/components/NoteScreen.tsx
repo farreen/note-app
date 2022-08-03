@@ -123,10 +123,11 @@ const NoteList = ({ noteList, onSelect }: NoteListProps) => {
 
 type AddNoteProps = {
   discard: () => void;
-  display: (responseMessage: string, response: Response) => void;
+  display: (responseMessage: string) => void;
 };
 
 const AddNote = ({ discard, display }: AddNoteProps) => {
+  const [error, setError] = React.useState<string | undefined>();
   const [content, setContent] = React.useState("");
   const [title, setTitle] = React.useState("");
   const addNewNote = async () => {
@@ -137,11 +138,18 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
       body: JSON.stringify(note),
     });
     const responseMessage: string = await response.text();
-    console.log("response", responseMessage, response);
-    display(responseMessage, response);
+    console.log("response", response);
+    if (response.ok) {
+      display(responseMessage);
+    } else {
+      setError(responseMessage);
+    }
   };
   return (
     <div>
+      <div>
+        <MDEditor.Markdown source={error} />
+      </div>
       <input
         style={{ backgroundColor: "#E5FFCC", paddingLeft: "5px" }}
         type="text"
@@ -210,24 +218,8 @@ const DeleteNote = ({ note, back, changeView }: DeleteNoteProps) => {
     </div>
   );
 };
-type DisplayErrorProps = {
-  error: string | undefined;
-};
-const DisplayError = ({ error }: DisplayErrorProps) => {
-  return (
-    <div style={{ marginLeft: "15%", fontWeight: "bold" }}>
-      <MDEditor.Markdown source={error} />
-    </div>
-  );
-};
 
-type View =
-  | "read-note"
-  | "edit-note"
-  | "add-note"
-  | "delete-note"
-  | "none"
-  | "displayError";
+type View = "read-note" | "edit-note" | "add-note" | "delete-note" | "none";
 
 function NoteScreen() {
   const [noteList, setnoteList] = React.useState<Note[]>([]);
@@ -235,7 +227,6 @@ function NoteScreen() {
     null
   );
   const [view, setView] = React.useState<View>("none");
-  const [error, setError] = React.useState<string | undefined>();
 
   const getListOfNote = async () => {
     let response = await fetch("http://localhost:20959/api/notes");
@@ -261,15 +252,10 @@ function NoteScreen() {
         return (
           <AddNote
             discard={() => setView("none")}
-            display={async (responseMessage: string, response: any) => {
-              if (response.ok) {
-                await getListOfNote();
-                setSelectedNoteId(responseMessage);
-                setView("read-note");
-              } else {
-                setError(responseMessage);
-                setView("displayError");
-              }
+            display={async (id: string) => {
+              await getListOfNote();
+              setSelectedNoteId(id);
+              setView("read-note");
             }}
           />
         );
@@ -304,8 +290,6 @@ function NoteScreen() {
             changeView={() => setView("read-note")}
           />
         );
-      case "displayError":
-        return <DisplayError error={error} />;
       default:
         return null;
     }
