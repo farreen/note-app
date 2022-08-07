@@ -54,17 +54,6 @@ const NoteReadOnly = ({
     </div>
   );
 };
-type SaveChangeProps = {
-  saveNote: () => void;
-};
-const SaveChange = ({ saveNote }: SaveChangeProps) => {
-  return (
-    <div style={{ marginLeft: "85%"}}>
-      <span>Save changes</span>
-      <Icon icon="updated" color="#0f0" onClick={saveNote} />
-    </div>
-  );
-};
 
 type NoteEditableProps = {
   discard: () => void;
@@ -83,7 +72,6 @@ type NoteEditableProps = {
 const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
   const [updatedNote, updateNote] = React.useState(note);
   const [error, setError] = React.useState<string | undefined>();
-  const [view, setView] = React.useState<View>("none");
 
   const saveNote = async () => {
     const response = await fetch("http://localhost:20959/api/notes", {
@@ -97,21 +85,6 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
       back();
     } else {
       setError(responseMessage);
-    }
-  };
-  type View = "save-change" | "none";
-
-  type ChangeViewProps = {
-    view: View;
-  };
-
-  const ChangeView = ({ view }: ChangeViewProps) => {
-    console.log("view: ", view);
-    switch (view) {
-      case "save-change":
-        return <SaveChange saveNote={saveNote} />;
-      default:
-        return null;
     }
   };
   return (
@@ -147,37 +120,6 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
             onClick={discard}
           />
         </div>
-        {/* {isEqual(note, updatedNote) ? (
-        <div style={{ margin: "5px" }}>
-          <Icon
-            icon="updated"
-            color="#0f0"
-            onClick={saveNote}
-          />
-          <Icon
-            style={{ margin: "10px" }}
-            icon="delete"
-            color="#f00"
-            onClick={discard}
-          />
-        </div>
-      ) :
-        <div style={{ margin: "5px" }}>
-          <Icon
-            icon="updated"
-            color="#0f0"
-            onClick={() => setView("save-change")}
-          />
-          <Icon
-            style={{ margin: "10px" }}
-            icon="delete"
-            color="#f00"
-            onClick={discard}
-          />
-        </div>
-      }
-        <ChangeView view={view} />
-          */}
     </div>
   );
 };
