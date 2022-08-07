@@ -61,13 +61,13 @@ type NoteEditableProps = {
   note: Note;
 };
 
-  const isEqual = (left: Note, right: Note): boolean => {
-    return (
-      left.title === right.title &&
-      left.content === right.content &&
-      left.id === right.id
-    )
-  };
+const isEqual = (left: Note, right: Note): boolean => {
+  return (
+    left.title === right.title &&
+    left.content === right.content &&
+    left.id === right.id
+  );
+};
 
 const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
   const [updatedNote, updateNote] = React.useState(note);
@@ -106,20 +106,16 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
           updateNote({ ...updatedNote, content: newContent || "" })
         }
       />
-        <div style={{ margin: "5px" }}>
-          {isEqual(note, updatedNote) ? null : <div>save changes</div>}
-          <Icon
-            icon="updated"
-            color="#0f0"
-            onClick={saveNote}
-          />
-          <Icon
-            style={{ margin: "10px" }}
-            icon="delete"
-            color="#f00"
-            onClick={discard}
-          />
-        </div>
+      <div style={{ margin: "5px" }}>
+        {isEqual(note, updatedNote) ? null : <div>save changes</div>}
+        <Icon icon="updated" color="#0f0" onClick={saveNote} />
+        <Icon
+          style={{ margin: "10px" }}
+          icon="delete"
+          color="#f00"
+          onClick={discard}
+        />
+      </div>
     </div>
   );
 };
