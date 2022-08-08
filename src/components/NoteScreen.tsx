@@ -1,6 +1,6 @@
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
-import { Icon } from "@blueprintjs/core";
+import { Button, Icon } from "@blueprintjs/core";
 
 type Note = {
   id: string;
@@ -107,8 +107,14 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
         }
       />
       <div style={{ margin: "5px" }}>
-        {isEqual(note, updatedNote) ? null : <div>save changes</div>}
-        <Icon icon="updated" color="#0f0" onClick={saveNote} />
+        {isEqual(note, updatedNote) || <div>Save changes</div>}
+        <Button
+          style={{ color: "#0f0", borderWidth: "0px" }}
+          disabled={isEqual(note, updatedNote)}
+          onClick={saveNote}
+        >
+          <Icon icon="updated" color="#0f0" />
+        </Button>
         <Icon
           style={{ margin: "10px" }}
           icon="delete"
