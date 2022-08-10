@@ -6,6 +6,7 @@ type Note = {
   id: string;
   title: string;
   content: string;
+  tags: string[];
 };
 
 type NoteReadOnlyProps = {
@@ -34,6 +35,10 @@ const NoteReadOnly = ({
         <MDEditor.Markdown
           source={note.title}
           style={{ fontSize: "24pt", fontWeight: "bold" }}
+        />
+        <MDEditor.Markdown
+          source={note.tags[0]}
+          style={{ fontSize: "15pt", marginLeft: "50px" }}
         />
         <MDEditor.Markdown source={note.content} />
       </div>
@@ -155,9 +160,10 @@ type AddNoteProps = {
 const AddNote = ({ discard, display }: AddNoteProps) => {
   const [error, setError] = React.useState<string | undefined>();
   const [content, setContent] = React.useState("");
-  const [title, setTitle] = React.useState("");
+  const [title, setTitle] = React.useState("Add title");
+  const [tag, setTag] = React.useState("Add tags");
   const addNewNote = async () => {
-    const note = { title, content };
+    const note = { title, content, tags: [tag] };
     const response = await fetch("http://localhost:20959/api/notes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -181,6 +187,12 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
         type="text"
         value={title}
         onChange={({ target: { value } }) => setTitle(value)}
+      />
+      <input
+        style={{ backgroundColor: "#E5FFCC", paddingLeft: "5px" }}
+        type="text"
+        value={tag}
+        onChange={({ target: { value } }) => setTag(value)}
       />
       <MDEditor
         style={{ backgroundColor: "#E5FFCC" }}
