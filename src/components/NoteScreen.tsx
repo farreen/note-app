@@ -26,21 +26,24 @@ const NoteReadOnly = ({
     <div>
       <div
         style={{
+          fontSize: "24pt",
+          fontWeight: "bold",
+          backgroundColor: "lightyellow",
+          paddingLeft: "20px",
+        }}
+      >
+        <span>{note.title}</span>
+      </div>
+      <div
+        style={{
           backgroundColor: "lightyellow",
           paddingLeft: "20px",
           paddingRight: "20px",
           paddingBottom: "20px",
         }}
       >
-        <MDEditor.Markdown
-          source={note.title}
-          style={{ fontSize: "24pt", fontWeight: "bold" }}
-        />
-        <MDEditor.Markdown
-          source={note.tags[0]}
-          style={{ fontSize: "15pt", marginLeft: "50px" }}
-        />
-        <MDEditor.Markdown source={note.content} />
+        <span style={{ fontSize: "8pt" }}>{note.tags[0]}</span>
+        <p>{note.content}</p>
       </div>
       <div style={{ float: "right", width: "20%", marginTop: "5px" }}>
         <Icon
@@ -50,11 +53,15 @@ const NoteReadOnly = ({
         />
         <Icon
           color="#f00"
-          style={{ margin: "10px" }}
+          style={{ margin: "10px", cursor: "pointer" }}
           icon="trash"
           onClick={() => deleteNote()}
         />
-        <Icon style={{ margin: "10px" }} icon="undo" onClick={() => cancel()} />
+        <Icon
+          style={{ margin: "10px", cursor: "pointer" }}
+          icon="undo"
+          onClick={() => cancel()}
+        />
       </div>
     </div>
   );
