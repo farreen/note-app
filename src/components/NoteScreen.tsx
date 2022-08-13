@@ -44,7 +44,7 @@ const NoteReadOnly = ({
         }}
       >
         <span style={{ fontSize: "8pt" }}>{note.tags[0]}</span>
-        <div style={{ fontSize: "10pt", fontWeight: "light" }}>{note.date}</div>
+        <div style={{ fontSize: "10pt", fontWeight: 200 }}>{note.date}</div>
         <p>{note.content}</p>
       </div>
       <div style={{ float: "right", width: "20%", marginTop: "5px" }}>
