@@ -7,6 +7,7 @@ type Note = {
   title: string;
   content: string;
   tags: string[];
+  date: string;
 };
 
 type NoteReadOnlyProps = {
@@ -43,6 +44,7 @@ const NoteReadOnly = ({
         }}
       >
         <span style={{ fontSize: "8pt" }}>{note.tags[0]}</span>
+        <div style={{ fontSize: "10pt", fontWeight: "light" }}>{note.date}</div>
         <p>{note.content}</p>
       </div>
       <div style={{ float: "right", width: "20%", marginTop: "5px" }}>
@@ -121,14 +123,14 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
       <div style={{ margin: "5px" }}>
         {isEqual(note, updatedNote) || <div>Save changes</div>}
         <Button
-          style={{ color: "#0f0", borderWidth: "0px" }}
+          style={{ color: "#0f0", borderWidth: "0px", cursor: "pointer" }}
           disabled={isEqual(note, updatedNote)}
           onClick={saveNote}
         >
           <Icon icon="updated" color="#0f0" />
         </Button>
         <Icon
-          style={{ margin: "10px" }}
+          style={{ margin: "10px", cursor: "pointer" }}
           icon="delete"
           color="#f00"
           onClick={discard}
@@ -211,7 +213,7 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
         <Icon
           icon="delete"
           color="#f00"
-          style={{ margin: "10px" }}
+          style={{ margin: "10px", cursor: "pointer" }}
           onClick={discard}
         />
       </div>
@@ -257,8 +259,17 @@ const DeleteNote = ({ note, back, changeView }: DeleteNoteProps) => {
         <MDEditor.Markdown source={note.content} />
       </div>
       <div style={{ marginTop: "5px" }}>
-        <Icon color="#f00" icon="trash" onClick={deleteNote} />
-        <Icon style={{ margin: "20px" }} icon="undo" onClick={changeView} />
+        <Icon
+          style={{ cursor: "pointer" }}
+          color="#f00"
+          icon="trash"
+          onClick={deleteNote}
+        />
+        <Icon
+          style={{ margin: "20px", cursor: "pointer" }}
+          icon="undo"
+          onClick={changeView}
+        />
       </div>
     </div>
   );
