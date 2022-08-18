@@ -17,12 +17,45 @@ type NoteReadOnlyProps = {
   cancel: () => void;
 };
 
+const isString = (arg: any) => {
+  return typeof arg === "string";
+};
+
+const isArrayOfString = (arg: any) => {
+  if (!Array.isArray(arg)) {
+    return false;
+  }
+  for (const item of arg) {
+    if (!isString(item)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const isNote = (arg: any) => {
+  return (
+    isString(arg.id) &&
+    isString(arg.title) &&
+    isString(arg.content) &&
+    isString(arg.date) &&
+    isArrayOfString(arg.tags)
+  );
+};
+
+const isArrayOfNotes = (arg: any) => {
+  return Array.isArray(arg) && arg.filter(isNote).length === arg.length;
+};
+
 const NoteReadOnly = ({
   note,
   edit,
   deleteNote,
   cancel,
 }: NoteReadOnlyProps) => {
+  console.log("isNote", isNote(note));
+  console.log("tag", isArrayOfString(note.tags));
+  console.log("isString", isString(note.title));
   return (
     <div>
       <div
@@ -289,6 +322,7 @@ function NoteScreen() {
     let list = await response.json();
     console.log("list", list);
     setnoteList(list);
+    console.log("isArr", isArrayOfNotes(list));
   };
 
   React.useEffect(() => void getListOfNote(), []);
