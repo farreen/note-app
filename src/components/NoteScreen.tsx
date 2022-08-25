@@ -137,7 +137,7 @@ const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
   return (
     <div>
       <div>
-        <span>{error}</span>
+        <span style={{ color: "#aa0000" }}>{error}</span>
       </div>
       <input
         type="text"
@@ -222,7 +222,7 @@ const AddNote = ({ discard, display }: AddNoteProps) => {
   return (
     <div>
       <div>
-        <MDEditor.Markdown source={error} />
+        <span style={{ color: "#aa0000" }}>{error}</span>
       </div>
       <input
         style={{ backgroundColor: "#E5FFCC", paddingLeft: "5px" }}
