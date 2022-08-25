@@ -310,6 +310,24 @@ const DeleteNote = ({ note, back, changeView }: DeleteNoteProps) => {
 
 type View = "read-note" | "edit-note" | "add-note" | "delete-note" | "none";
 
+function deserializeAsNotes(rawNotes: any): Note[] {
+    if(!isArrayOfNotes(rawNotes)) {
+        throw Error("rawNotes cannot be deserialized into notes");
+    }
+    const notes: Note[] = [];
+    for(const item of rawNotes) {
+        const note: Note = {
+            id: item.id,
+            title: item.title,
+            content: item.content,
+            date: item.date,
+            tags: item.tags,
+        };
+        notes.push(note);
+    }
+    return notes;
+}
+
 function NoteScreen() {
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [selectedNoteId, setSelectedNoteId] = React.useState<string | null>(
@@ -319,10 +337,10 @@ function NoteScreen() {
 
   const getListOfNote = async () => {
     let response = await fetch("http://localhost:20959/api/notes");
-    let notes = await response.json();
-    console.log("list", notes);
-    setNotes(notes);
-    console.log("isArr", isArrayOfNotes(notes));
+    let rawNotes = await response.json();
+    console.log("list", rawNotes);
+    setNotes(deserializeAsNotes(rawNotes));
+    console.log("isArr", isArrayOfNotes(rawNotes));
   };
 
   React.useEffect(() => void getListOfNote(), []);
