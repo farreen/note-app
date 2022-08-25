@@ -314,18 +314,7 @@ function deserializeAsNotes(rawNotes: any): Note[] {
     if(!isArrayOfNotes(rawNotes)) {
         throw Error("rawNotes cannot be deserialized into notes");
     }
-    const notes: Note[] = [];
-    for(const item of rawNotes) {
-        const note: Note = {
-            id: item.id,
-            title: item.title,
-            content: item.content,
-            date: item.date,
-            tags: item.tags,
-        };
-        notes.push(note);
-    }
-    return notes;
+    return rawNotes as Note[];
 }
 
 function NoteScreen() {
