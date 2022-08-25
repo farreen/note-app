@@ -311,7 +311,7 @@ const DeleteNote = ({ note, back, changeView }: DeleteNoteProps) => {
 type View = "read-note" | "edit-note" | "add-note" | "delete-note" | "none";
 
 function NoteScreen() {
-  const [noteList, setnoteList] = React.useState<Note[]>([]);
+  const [notes, setNotes] = React.useState<Note[]>([]);
   const [selectedNoteId, setSelectedNoteId] = React.useState<string | null>(
     null
   );
@@ -319,15 +319,15 @@ function NoteScreen() {
 
   const getListOfNote = async () => {
     let response = await fetch("http://localhost:20959/api/notes");
-    let list = await response.json();
-    console.log("list", list);
-    setnoteList(list);
-    console.log("isArr", isArrayOfNotes(list));
+    let notes = await response.json();
+    console.log("list", notes);
+    setNotes(notes);
+    console.log("isArr", isArrayOfNotes(notes));
   };
 
   React.useEffect(() => void getListOfNote(), []);
 
-  const selectedNote: Note | undefined = noteList.find(
+  const selectedNote: Note | undefined = notes.find(
     (note) => note.id === selectedNoteId
   );
 
@@ -395,7 +395,7 @@ function NoteScreen() {
           onClick={() => setView("add-note")}
         />
         <NoteList
-          noteList={noteList}
+          noteList={notes}
           onSelect={(note) => {
             setSelectedNoteId(note.id);
             setView("read-note");
