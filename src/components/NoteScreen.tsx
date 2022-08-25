@@ -2,13 +2,7 @@ import React from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { Button, Icon } from "@blueprintjs/core";
 
-type Note = {
-  id: string;
-  title: string;
-  content: string;
-  tags: string[];
-  date: string;
-};
+import { Note, deserializeAsNotes, isEqual } from "../utils/types";
 
 type NoteReadOnlyProps = {
   note: Note;
@@ -17,45 +11,12 @@ type NoteReadOnlyProps = {
   cancel: () => void;
 };
 
-const isString = (arg: any) => {
-  return typeof arg === "string";
-};
-
-const isArrayOfString = (arg: any) => {
-  if (!Array.isArray(arg)) {
-    return false;
-  }
-  for (const item of arg) {
-    if (!isString(item)) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const isNote = (arg: any) => {
-  return (
-    isString(arg.id) &&
-    isString(arg.title) &&
-    isString(arg.content) &&
-    isString(arg.date) &&
-    isArrayOfString(arg.tags)
-  );
-};
-
-const isArrayOfNotes = (arg: any) => {
-  return Array.isArray(arg) && arg.filter(isNote).length === arg.length;
-};
-
 const NoteReadOnly = ({
   note,
   edit,
   deleteNote,
   cancel,
 }: NoteReadOnlyProps) => {
-  console.log("isNote", isNote(note));
-  console.log("tag", isArrayOfString(note.tags));
-  console.log("isString", isString(note.title));
   return (
     <div>
       <div
@@ -106,14 +67,6 @@ type NoteEditableProps = {
   discard: () => void;
   back: () => void;
   note: Note;
-};
-
-const isEqual = (left: Note, right: Note): boolean => {
-  return (
-    left.title === right.title &&
-    left.content === right.content &&
-    left.id === right.id
-  );
 };
 
 const NoteEditable = ({ discard, back, note }: NoteEditableProps) => {
@@ -310,13 +263,6 @@ const DeleteNote = ({ note, back, changeView }: DeleteNoteProps) => {
 
 type View = "read-note" | "edit-note" | "add-note" | "delete-note" | "none";
 
-function deserializeAsNotes(rawNotes: any): Note[] {
-    if(!isArrayOfNotes(rawNotes)) {
-        throw Error("rawNotes cannot be deserialized into notes");
-    }
-    return rawNotes as Note[];
-}
-
 function NoteScreen() {
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [selectedNoteId, setSelectedNoteId] = React.useState<string | null>(
@@ -329,7 +275,6 @@ function NoteScreen() {
     let rawNotes = await response.json();
     console.log("list", rawNotes);
     setNotes(deserializeAsNotes(rawNotes));
-    console.log("isArr", isArrayOfNotes(rawNotes));
   };
 
   React.useEffect(() => void getListOfNote(), []);
